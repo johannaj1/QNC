@@ -5,16 +5,15 @@
 %  p = probability of success on each trial (constant across trials)
 %  n = number of trials
 
-p = 0.14;
+p = 0.27;
 n = 4;       % number of "trials" per "experiment"
-NumExperiments = 1421;     % number of "experiments"
-outcomes = binornd(n,p,NumExperiments,1)+1; % adding 1 to the distribution because
-% the graph that the authors show runs on a scale starting at 1, not 0
+NumExperiments = 1000;     % number of "experiments"
+outcomes = binornd(n,p,NumExperiments,1)
 
 % Make histogram of all possible outcomes. We want bins centered on whole
 % numbers so we offset the edges
 edges = -0.5:10.5;
-counts = histcounts(outcomes, edges);
+counts = histcounts(outcomes, edges)
 
 % Show a bar plot of the simulated bionimal distribution
 clf;
@@ -25,16 +24,16 @@ xlabel(sprintf('Number of successes in %d tries', n));
 ylabel('Count');
 xlim([1 6]);
 
+sum(outcomes>0)
 % Normalize it to make it a pdf. Here counts (the x-axis of the histogram)
 %  is a DISCRETE variable, so we just have to add up the values
-bar(xs, counts./sum(counts));
+bar(xs, counts./sum(outcomes>0)); % it seems like the authors displayed their probabilities relative to the nonzero values,
+% while excluding cases where the (simulated) value would have been zero. I converted
+% to a PDF by dividing the total counts for x-values 1-4 by the total
+% number of simulated trials where there was a nonzero result
+
 title(sprintf('PDF of binomial distribution, n=%d, p=%.2f', ...
    n,p));
 xlabel(sprintf('Number of successes in %d tries', n));
 ylabel('Probability');
 xlim([1 6]);
-
-%Note: I am extremely confused by why the value p = 0.27, which the authors
-%state they used in the paper, does not generate a graph that looks correct
-%at all. I ended up choosing p = 0.14 because it was roughly a better fit to the
-%graph that was shown in the data.
